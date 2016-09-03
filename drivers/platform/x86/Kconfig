@@ -979,11 +979,11 @@ config INTEL_PMC_IPC
 	The PMC is an ARC processor which defines IPC commands for communication
 	with other entities in the CPU.
 
-config SURFACE_PRO3_BUTTON
-	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
+config SURFACE_BUTTON
+	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3, Pro 4, and Book"
 	depends on ACPI && INPUT
 	---help---
-	  This driver handles the power/home/volume buttons on the Microsoft Surface Pro 3/4 tablet.
+	  This driver handles the power/home/volume buttons on the Microsoft Surface Series Machines.
 
 config INTEL_PUNIT_IPC
 	tristate "Intel P-Unit IPC Driver"

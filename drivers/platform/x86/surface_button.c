@@ -1,6 +1,6 @@
 /*
  * power/home/volume button support for
- * Microsoft Surface Pro 3/4 tablet.
+ * Microsoft Surface Series Machines.
  *
  * Copyright (c) 2015 Intel Corporation.
  * All rights reserved.
@@ -21,8 +21,9 @@
 
 #define SURFACE_PRO3_BUTTON_HID		"MSHW0028"
 #define SURFACE_PRO4_BUTTON_HID		"MSHW0040"
+#define SURFACE_BOOK_BUTTON_HID         "MSHW0029"
 #define SURFACE_BUTTON_OBJ_NAME		"VGBI"
-#define SURFACE_BUTTON_DEVICE_NAME	"Surface Pro 3/4 Buttons"
+#define SURFACE_BUTTON_DEVICE_NAME	"Surface Series Buttons"
 
 #define SURFACE_BUTTON_NOTIFY_PRESS_POWER	0xc6
 #define SURFACE_BUTTON_NOTIFY_RELEASE_POWER	0xc7
@@ -36,17 +37,17 @@
 #define SURFACE_BUTTON_NOTIFY_PRESS_VOLUME_DOWN	0xc2
 #define SURFACE_BUTTON_NOTIFY_RELEASE_VOLUME_DOWN	0xc3
 
-ACPI_MODULE_NAME("surface pro 3 button");
+ACPI_MODULE_NAME("surface series button");
 
 MODULE_AUTHOR("Chen Yu");
-MODULE_DESCRIPTION("Surface Pro3 Button Driver");
+MODULE_DESCRIPTION("Surface Series Button Driver");
 MODULE_LICENSE("GPL v2");
 
 /*
  * Power button, Home button, Volume buttons support is supposed to
  * be covered by drivers/input/misc/soc_button_array.c, which is implemented
  * according to "Windows ACPI Design Guide for SoC Platforms".
- * However surface pro3 seems not to obey the specs, instead it uses
+ * However, the Surface series seems not to obey the specs, instead it uses
  * device VGBI(MSHW0028) for dispatching the events.
  * We choose acpi_driver rather than platform_driver/i2c_driver because
  * although VGBI has an i2c resource connected to i2c controller, it
@@ -57,6 +58,7 @@ MODULE_LICENSE("GPL v2");
 static const struct acpi_device_id surface_button_device_ids[] = {
 	{SURFACE_PRO3_BUTTON_HID,    0},
 	{SURFACE_PRO4_BUTTON_HID,    0},
+        {SURFACE_BOOK_BUTTON_HID,    0},
 	{"", 0},
 };
 MODULE_DEVICE_TABLE(acpi, surface_button_device_ids);
@@ -204,8 +206,8 @@ static SIMPLE_DEV_PM_OPS(surface_button_pm,
 		surface_button_suspend, surface_button_resume);
 
 static struct acpi_driver surface_button_driver = {
-	.name = "surface_pro3_button",
-	.class = "SurfacePro3",
+	.name = "surface_button",
+	.class = "Surface",
 	.ids = surface_button_device_ids,
 	.ops = {
 		.add = surface_button_add,
