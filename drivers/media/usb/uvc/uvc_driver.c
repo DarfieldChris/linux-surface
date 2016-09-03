@@ -2125,6 +2125,7 @@ MODULE_PARM_DESC(timeout, "Streaming control requests timeout");
  * though they are compliant.
  */
 static struct usb_device_id uvc_ids[] = {
+
 	/* LogiLink Wireless Webcam */
 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
 				| USB_DEVICE_ID_MATCH_INT_INFO,
@@ -2170,6 +2171,46 @@ static struct usb_device_id uvc_ids[] = {
 	  .bInterfaceSubClass	= 1,
 	  .bInterfaceProtocol	= 0,
 	  .driver_info		= UVC_QUIRK_PROBE_MINMAX },
+	/* Microsoft Surface Pro 3 Front Camera*/
+	{ .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor             = 0x045e,
+	  .idProduct            = 0x07be,
+	  .bInterfaceClass      = USB_CLASS_VIDEO,
+	  .bInterfaceSubClass   = 1,
+	  .bInterfaceProtocol   = 1 },
+	/* Microsoft Surface Pro 3 Rear Camera*/
+	{ .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor             = 0x045e,
+	  .idProduct            = 0x07bf,
+	  .bInterfaceClass      = USB_CLASS_VIDEO,
+	  .bInterfaceSubClass   = 1,
+	  .bInterfaceProtocol   = 1 },
+	/* Microsoft Surface Pro 4 Camera*/
+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor		= 0x045e,
+	  .idProduct		= 0x090c,
+	  .bInterfaceClass	= USB_CLASS_VIDEO,
+	  .bInterfaceSubClass	= 1,
+	  .bInterfaceProtocol	= 1 },
+	/* Microsoft Surface Book Front Camera*/
+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor		= 0x045e,
+	  .idProduct		= 0x090b,
+	  .bInterfaceClass	= USB_CLASS_VIDEO,
+	  .bInterfaceSubClass	= 1,
+	  .bInterfaceProtocol	= 1 },
+	/* Microsoft Surface Book Rear Camera*/
+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+				| USB_DEVICE_ID_MATCH_INT_INFO,
+	  .idVendor		= 0x045e,
+	  .idProduct		= 0x091a,
+	  .bInterfaceClass	= USB_CLASS_VIDEO,
+	  .bInterfaceSubClass	= 1,
+	  .bInterfaceProtocol	= 1 },
 	/* Logitech Quickcam Fusion */
 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
 				| USB_DEVICE_ID_MATCH_INT_INFO,
