@@ -101,6 +101,7 @@ struct acpi_button {
 	char phys[32];			/* for input device */
 	unsigned long pushed;
 	bool suspended;
+	unsigned long long cache_state;
 };
 
 static BLOCKING_NOTIFIER_HEAD(acpi_lid_notifier);
@@ -118,8 +119,12 @@ static int acpi_button_state_seq_show(struct seq_file *seq, void *offset)
 	struct acpi_device *device = seq->private;
 	acpi_status status;
 	unsigned long long state;
+	struct acpi_button *button = acpi_driver_data(device);
 
 	status = acpi_evaluate_integer(device->handle, "_LID", NULL, &state);
+	if (!button)
+		return 0;
+	state = button->cache_state;
 	seq_printf(seq, "state:      %s\n",
 		   ACPI_FAILURE(status) ? "unsupported" :
 			(state ? "open" : "closed"));
@@ -233,6 +238,7 @@ int acpi_lid_open(void)
 {
 	acpi_status status;
 	unsigned long long state;
+	struct acpi_button *button;
 
 	if (!lid_device)
 		return -ENODEV;
@@ -242,6 +248,7 @@ int acpi_lid_open(void)
 	if (ACPI_FAILURE(status))
 		return -ENODEV;
 
+	state = button->cache_state;
 	return !!state;
 }
 EXPORT_SYMBOL(acpi_lid_open);
@@ -257,6 +264,8 @@ static int acpi_lid_send_state(struct acpi_device *device)
 	if (ACPI_FAILURE(status))
 		return -ENODEV;
 
+	state = button->cache_state;
+	printk("***********LID is trying to send state:%lld to input/netlink layer****\n",state);
 	/* input layer checks if event is redundant */
 	input_report_switch(button->input, SW_LID, !state);
 	input_sync(button->input);
@@ -290,6 +299,7 @@ static void acpi_button_notify(struct acpi_device *device, u32 event)
 	case ACPI_BUTTON_NOTIFY_STATUS:
 		input = button->input;
 		if (button->type == ACPI_BUTTON_TYPE_LID) {
+			button->cache_state = !button->cache_state;
 			acpi_lid_send_state(device);
 		} else {
 			int keycode;
@@ -325,6 +335,7 @@ static int acpi_button_suspend(struct device *dev)
 	struct acpi_button *button = acpi_driver_data(device);
 
 	button->suspended = true;
+	button->cache_state = 0;
 	return 0;
 }
 
@@ -334,8 +345,10 @@ static int acpi_button_resume(struct device *dev)
 	struct acpi_button *button = acpi_driver_data(device);
 
 	button->suspended = false;
-	if (button->type == ACPI_BUTTON_TYPE_LID)
+	if (button->type == ACPI_BUTTON_TYPE_LID) {
+		button->cache_state = 1;
 		return acpi_lid_send_state(device);
+	}
 	return 0;
 }
 #endif
@@ -416,6 +429,7 @@ static int acpi_button_add(struct acpi_device *device)
 	if (error)
 		goto err_remove_fs;
 	if (button->type == ACPI_BUTTON_TYPE_LID) {
+		button->cache_state = 1;
 		acpi_lid_send_state(device);
 		/*
 		 * This assumes there's only one lid device, or if there are
