@@ -686,7 +686,7 @@ static void mt_complete_slot(struct mt_device *td, struct input_dev *input)
 			input_event(input, EV_ABS, ABS_MT_TOUCH_MINOR, minor);
 		}
 	}
-inc_num_received;
+inc_num_received:
 	td->num_received++;
 }
 
